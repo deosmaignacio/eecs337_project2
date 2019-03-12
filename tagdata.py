@@ -3,6 +3,9 @@ from fractions import Fraction
 import keywords
 import nltk
 
+url = "https://www.allrecipes.com/recipe/223042/chicken-parmesan/?internalSource=previously%20viewed&referringContentType=Homepage&clickId=cardslot%206&fbclid=IwAR3uxS2ybMBJGijFYGSdqZoRkaS9lSYF82S5l35CPZSg9-M0R7FdDgHdTjA"
+recipe_list = parseurl.processhtml(url)
+
 def tag_ingredients(recipe_list):
 	ingredients_dict = {}
 	index1 = ""
@@ -54,6 +57,7 @@ def find_tools(recipe_list):
 	for j in recipe_list:
 		for i in j.split():
 			i = i.strip(",.")
+			i = i.lower()
 			if (i in tool_list or i+"s" in tool_list) and i not in tools:
 				tools.append(i)
 
@@ -71,6 +75,7 @@ def get_cooking_methods(recipe_list):
 	for j in recipe_list:
 		for i in j.split():
 			i = i.strip(",.")
+			i = i.lower()
 			if (i in method_list or i+"ing" in method_list) and i not in methods:
 				methods.append(i)
 
@@ -91,6 +96,7 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 	recipe_list = recipe_list[index1:index2]
 	count = 1
 	for i in recipe_list:
+		i = i.lower()
 		i = i.split()
 		if len(i)>2:
 			steps_dict.update({"step{0}".format(count):{"ingredients":[],"tools":[],"methods":[],"times":[]}})
@@ -103,6 +109,18 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 					steps_dict["step{0}".format(count)]["tools"].append(i[index])
 				elif (i[index] in method_list or i[index]+"s" in method_list or i[index][:-1] in method_list) and i[index] not in steps_dict["step{0}".format(count)]["methods"]:
 					steps_dict["step{0}".format(count)]["methods"].append(i[index])
+				elif i[index] == "degrees":
+					temp_str = ""
+					if i[index-1].strip("()").isdigit():
+						temp_str += i[index-1]
+
+					temp_str += " degrees "
+
+					if len(i[index+1].strip("().")) == 1:
+						temp_str += i[index+1]
+
+					steps_dict["step{0}".format(count)]["methods"].append(temp_str.strip("()."))
+
 				elif (i[index] in time_list or i[index]+"s" in time_list or i[index][:-1] in time_list) and i[index] not in steps_dict["step{0}".format(count)]["times"]:
 					temp_count = 1
 					temp_str = i[index]
@@ -117,10 +135,10 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 			count += 1
 	return steps_dict
 
-# print("Ingredients"+"\n",tag_ingredients(recipe_list),"\n")
-# print("Tools"+"\n",find_tools(recipe_list),"\n")
-# print("Methods"+"\n",get_cooking_methods(recipe_list),"\n")
-# ingredients = tag_ingredients(recipe_list)
-# tools = find_tools(recipe_list)
-# methods = get_cooking_methods(recipe_list)
-# print("Steps"+"\n",parse_steps(ingredients, tools, methods, recipe_list))
+print("Ingredients"+"\n",tag_ingredients(recipe_list),"\n")
+print("Tools"+"\n",find_tools(recipe_list),"\n")
+print("Methods"+"\n",get_cooking_methods(recipe_list),"\n")
+ingredients = tag_ingredients(recipe_list)
+tools = find_tools(recipe_list)
+methods = get_cooking_methods(recipe_list)
+print("Steps"+"\n",parse_steps(ingredients, tools, methods, recipe_list))
