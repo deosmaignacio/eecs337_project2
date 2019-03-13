@@ -22,3 +22,9 @@ def cooking_methods():
 def time():
     words = ["minutes","seconds","hours","days"]
     return words
+
+def meat():
+    words = ["chicken", "beef", "turkey", "ham", "steak", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clams", "mussels", "scallops", "lobster"]
+
+def vegetarian():
+    words = ["tofu", "tempeh", "seitan", "mushrooms" "lentils"]
