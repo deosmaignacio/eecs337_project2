@@ -3,8 +3,8 @@ from fractions import Fraction
 import keywords
 import nltk
 
-url = "https://www.allrecipes.com/recipe/223042/chicken-parmesan/?internalSource=previously%20viewed&referringContentType=Homepage&clickId=cardslot%206&fbclid=IwAR3uxS2ybMBJGijFYGSdqZoRkaS9lSYF82S5l35CPZSg9-M0R7FdDgHdTjA"
-recipe_list = parseurl.processhtml(url)
+# url = "https://www.allrecipes.com/recipe/223042/chicken-parmesan/?internalSource=previously%20viewed&referringContentType=Homepage&clickId=cardslot%206&fbclid=IwAR3uxS2ybMBJGijFYGSdqZoRkaS9lSYF82S5l35CPZSg9-M0R7FdDgHdTjA"
+# recipe_list = parseurl.processhtml(url)
 
 def tag_ingredients(recipe_list):
 	ingredients_dict = {}
@@ -135,10 +135,10 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 			count += 1
 	return steps_dict
 
-print("Ingredients"+"\n",tag_ingredients(recipe_list),"\n")
-print("Tools"+"\n",find_tools(recipe_list),"\n")
-print("Methods"+"\n",get_cooking_methods(recipe_list),"\n")
-ingredients = tag_ingredients(recipe_list)
-tools = find_tools(recipe_list)
-methods = get_cooking_methods(recipe_list)
-print("Steps"+"\n",parse_steps(ingredients, tools, methods, recipe_list))
+# print("Ingredients"+"\n",tag_ingredients(recipe_list),"\n")
+# print("Tools"+"\n",find_tools(recipe_list),"\n")
+# print("Methods"+"\n",get_cooking_methods(recipe_list),"\n")
+# ingredients = tag_ingredients(recipe_list)
+# tools = find_tools(recipe_list)
+# methods = get_cooking_methods(recipe_list)
+# print("Steps"+"\n",parse_steps(ingredients, tools, methods, recipe_list))
