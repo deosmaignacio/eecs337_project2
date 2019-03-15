@@ -1,5 +1,5 @@
 def measurements():
-    words = ["cups","teaspoons","tablespoons","ounces","pounds","quarts","pints","gallons"]
+    words = ["cups","teaspoons","tablespoons","ounces","pounds","quarts","pints","gallons", "cans", "bottles"]
     return words
 
 def tools():
@@ -24,9 +24,55 @@ def time():
     return words
 
 def meat():
-    words = ["chicken", "beef", "turkey", "ham", "steak", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clams", "mussels", "scallops", "lobster"]
+    words = ["sausage", "chorizo sausage", "chuck roast", "roast", "chicken", "beef", "turkey", "ham", "steak", "fish", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clam", "clams", "mussel", "mussels", "scallop", "scallops", "lobster", "shrimp", "tuna", "abalone"]
     return words
 
+def veggies():
+    words = ["corn", "mushrooms", "squash", "lettuce", "carrots", "cucumbers", "celery", "spinach", "cabbage", "asparagus", "radish", "kale", "zucchini", "peas"]
+    return words
+
+def sandwich():
+    words = ["bread", "rolls", "buns", "pita", "tortillas"]
+    return words
+
+def pasta():
+    words = ["pasta", "spaghetti", "lasagna", "cannelloni", "macaroni", "ravioli", "rigatoni", "tagliatelle", "tortellini", "penne", "linguine", "fettucini", "pappardelle", "orzo", "bucatini", "vermicelli", "fusilli", "ziti", "rotini"]
+    return words
+
+def dressing():
+    words = ["mayonnaise", "ketchup", "mustard", "dressing", "ranch", "cajun"]
+    return words
+
+# Vegetarian Options
 def vegetarian():
-    words = ["tofu", "tempeh", "seitan", "mushrooms" "lentils"]
+    words = ["tofu", "tempeh", "seitan", "mushrooms","lentils"]
+    return words
+
+# Asian Foods
+def asian_noodles():
+    words = ["rice noodles", "udon", "soba", "ramen", "lo mein", "wonton noodles", "somen"]
+    return words
+
+def asian_sandwich():
+    words = ["naan", "rice bread", "flatbread", "milk bread", "ddongbang"]
+    return words
+
+def asian_meat():
+    words = ["wagyu beef", "bulgogi", "beef satay", "chicken satay", "pepper steak", "mongolian beef", "general tsao's chicken", "pork belly", "sesame chicken", "braised duck", "curry chicken"]
+    return words
+
+def asian_veggies():
+    words = ["napa cabbage", "bok choy", "daikon", "white radish", "chinese eggplant", "choy sum", "mizuna", "lotus root", "taro", "chinese broccoli"]
+    return words
+
+def asian_dressing():
+    words = ["sesame oil", "hoisin sauce", "soy sauce", "fish sauce", "plum sauce", "chili oil", "XO sauce"]
+    return words
+
+def asian_sugar():
+    words = ["wasanbon sugar", "okinawa black sugar", "china rock honey sugar", "kurosato sugar"]
+    return words
+
+def asian_cheese():
+    words = ["paneer", "sakura cheese", "bandel cheese", "ragya yak cheese"]
     return words

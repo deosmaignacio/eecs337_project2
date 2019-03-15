@@ -3,10 +3,12 @@ from fractions import Fraction
 import keywords
 import nltk
 
-# url = "https://www.allrecipes.com/recipe/223042/chicken-parmesan/?internalSource=previously%20viewed&referringContentType=Homepage&clickId=cardslot%206&fbclid=IwAR3uxS2ybMBJGijFYGSdqZoRkaS9lSYF82S5l35CPZSg9-M0R7FdDgHdTjA"
-# recipe_list = parseurl.processhtml(url)
+url = "https://www.allrecipes.com/recipe/12055/sicilian-ragu/?internalSource=hub%20recipe&referringContentType=Search&clickId=cardslot%201&fbclid=IwAR1HCWKyyKoHHBLngJ8aBSR7Hk1MWV0g1SusvErTkUNa1RpJTdV3MsZO5h0"
+recipe_list = parseurl.processhtml(url)
 
 def tag_ingredients(recipe_list):
+	stop_list = ["taste"]
+	pass_list = ["olive"]
 	ingredients_dict = {}
 	index1 = ""
 	index2 = ""
@@ -23,6 +25,7 @@ def tag_ingredients(recipe_list):
 	for i in ingredients_list:
 		quantity = 0
 		measurement = ""
+		weight = ""
 		ingredient = ""
 		descriptor = ""
 		for k in i.split():
@@ -32,15 +35,21 @@ def tag_ingredients(recipe_list):
 				quantity += float(k)
 			if k in measure_key_list or k+"s" in measure_key_list:
 				measurement = k
-			if k != quantity and k!= measurement and not(k.isdigit()) and not("/" in k):
+				# measurement.append(k)
+			# if "(" in k:
+			# 	index = i.split().index(k)
+			# 	measurement.append((k+" "+i.split()[index+1]).strip("()"))
+			if k != quantity and k!= measurement and not(k.isdigit()) and not("/" in k) and "(" not in k and ")" not in k and k not in measure_key_list and k+"s" not in measure_key_list:
 				token_k= k.split()
 				tagged_k = nltk.pos_tag(token_k)
 				# print(tagged_k)
-				if tagged_k[0][1] == "NN" or tagged_k[0][0] == "olive":
+				if tagged_k[0][0] not in stop_list and (tagged_k[0][1] == "NN" or tagged_k[0][0] in pass_list or tagged_k[0][1] == "NNS"):
 					ingredient += k + " "
 				if (tagged_k[0][1] == "JJ" or tagged_k[0][1] == "VBN" or tagged_k[0][1] == "RB") and tagged_k[0][0] not in ingredient:
 					descriptor += k + " "
 
+		if quantity == 0:
+			quantity = ""
 		ingredients_dict.update({ingredient:{"quantity":quantity, "measurement":measurement,"descriptor":descriptor}})
 
 	return ingredients_dict
@@ -87,6 +96,8 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 	index1 = ""
 	index2 = ""
 	steps_dict = {}
+	dir_list = []
+	final_dict = {}
 	for index in range(len(recipe_list)):
 		if recipe_list[index] == "Directions":
 			index1 = index
@@ -95,6 +106,12 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 			break
 	recipe_list = recipe_list[index1:index2]
 	count = 1
+	for step in recipe_list:
+		if len(step.split())>2:
+			split_steps = step.split(".")
+			for line in split_steps:
+				if line != "":
+					dir_list.append(line)
 	for i in recipe_list:
 		i = i.lower()
 		i = i.split()
@@ -133,12 +150,56 @@ def parse_steps(ingredient_dict, tool_list, method_list, recipe_list):
 
 					steps_dict["step{0}".format(count)]["times"].append(temp_str)
 			count += 1
-	return steps_dict
+	final_dict.update({"parsed_dict":steps_dict})
+	final_dict.update({"raw":dir_list})
+	return final_dict
 
-# print("Ingredients"+"\n",tag_ingredients(recipe_list),"\n")
-# print("Tools"+"\n",find_tools(recipe_list),"\n")
-# print("Methods"+"\n",get_cooking_methods(recipe_list),"\n")
-# ingredients = tag_ingredients(recipe_list)
-# tools = find_tools(recipe_list)
-# methods = get_cooking_methods(recipe_list)
-# print("Steps"+"\n",parse_steps(ingredients, tools, methods, recipe_list))
+
+def print_ingredients(recipe_list):
+
+	print("Ingredients"+"\n")
+	ingredients = tag_ingredients(recipe_list)
+	for key, value in ingredients.items():
+		# print("\t",value["quantity"],' '.join(str(m) for m in value["measurement"]),value["descriptor"],key)
+		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+
+def print_methods(recipe_list):
+
+	print("Methods:"+"\n")
+	methods = get_cooking_methods(recipe_list)
+	for method in methods:
+		print("\t",method)
+
+def print_tools(recipe_list):
+
+	print("Tools:"+"\n")
+	tools = find_tools(recipe_list)
+	for tool in tools:
+		print("\t",tool)
+
+def print_directions(recipe_list):
+
+	ingredients = tag_ingredients(recipe_list)
+	methods = get_cooking_methods(recipe_list)
+	tools = find_tools(recipe_list)
+
+	print("Directions:"+"\n")
+	step_dict = parse_steps(ingredients, tools, methods, recipe_list)
+	for raw_dir in step_dict["raw"]:
+		print("\t",raw_dir)
+
+def get_directions(recipe_list):
+	dir = ""
+
+	ingredients = tag_ingredients(recipe_list)
+	methods = get_cooking_methods(recipe_list)
+	tools = find_tools(recipe_list)
+
+	dir += "Directions:"+"\n"
+	step_dict = parse_steps(ingredients, tools, methods, recipe_list)
+	for raw_dir in step_dict["raw"]:
+		dir += "\t"+raw_dir+"\n"
+
+	return dir
+
+# output(recipe_list)
