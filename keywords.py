@@ -25,6 +25,8 @@ def time():
 
 def meat():
     words = ["chicken", "beef", "turkey", "ham", "steak", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clams", "mussels", "scallops", "lobster"]
+    return words
 
 def vegetarian():
     words = ["tofu", "tempeh", "seitan", "mushrooms" "lentils"]
+    return words
