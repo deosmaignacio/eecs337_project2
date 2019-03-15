@@ -63,10 +63,11 @@ def originalRecipe(url):
 
 	ingredients = tagdata.tag_ingredients(recipeList)
 	originalIngredients = ingredients
-	print("Original Ingredients: ")
+	print("Ingredients: ")
 	tagdata.print_ingredients(recipeList)
 	tools = tagdata.find_tools(recipeList)
 	methods = tagdata.get_cooking_methods(recipeList)
+	print('\n')
 	steps = tagdata.parse_steps(ingredients, tools, methods, recipeList)
 	originalSteps = steps
 
@@ -89,8 +90,6 @@ def originalRecipe(url):
 
 	# print("Main cooking method: " + determineCookingMethod(methods))
 	tagdata.print_methods(recipeList)
-	#
-	# numberOfSteps = len(steps.keys())
 	tagdata.print_directions(recipeList)
 
 def main():
@@ -172,7 +171,7 @@ def toHealthy():
 	global originalIngredients
 	healthyRecipe = originalIngredients
 
-	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'salt': 'iodized salt', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'beef': 'turkey burger', 'ketchup': 'tomato sauce'}
+	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'salt': 'iodized salt', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'beef': 'turkey burger', 'fries': 'sweet potato fries'}
 	# replace cheeses with feta cheese (not all of them... doesn't make sense to replace parmesan in a pasta w/ feta cheese for instance)
 	cheeseTypes = ['mozzarella', 'parmigiano-reggiano', 'parmigiano', 'parmigiano reggiano', 'goat', 'cheddar', 'american', 'monterey', 'jack', 'monterey jack', 'provolone', 'cheddar', 'brie', 'swiss', 'manchego']
 	# replace all breads with Whole wheat Bread
