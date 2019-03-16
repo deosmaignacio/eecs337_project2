@@ -233,7 +233,7 @@ def toHealthy():
 	global originalSteps
 	healthyRecipe = copy.deepcopy(originalIngredients)
 
-	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'fries': 'sweet potato fries', 'milk': 'skim milk', 'chocolate' : 'dark chocolate', 'yogurt': 'greek yogurt', 'ranch': 'olive oil', 'caesar': 'olive oil'}
+	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'fries': 'sweet potato fries', 'milk': 'skim milk', 'chocolate' : 'dark chocolate', 'yogurt': 'greek yogurt', 'ranch': 'olive oil', 'caesar': 'olive oil', "butter": "I Can't Believe It's Not Butter", "beef": "lean beef"}
 	# replace cheeses with feta cheese (not all of them... doesn't make sense to replace parmesan in a pasta w/ feta cheese for instance)
 	cheeseTypes = ['mozzarella', 'parmigiano-reggiano', 'parmigiano', 'parmigiano reggiano', 'goat', 'cheddar', 'american', 'monterey', 'jack', 'monterey jack', 'provolone', 'cheddar', 'brie', 'swiss', 'manchego', 'parmesan']
 	# replace all breads with Whole wheat Bread
@@ -299,10 +299,10 @@ def toHealthy():
 		measurement = convertMeasurement(measurement)
 		descriptor = healthyRecipe[ingredient]['descriptor']
 		if quantity == "":
-			print(str(measurement) + " " + ingredient + " " + str(descriptor))
+			print(str(measurement) + " " + healthyRecipe[ingredient]['parens']+ " " + ingredient + " " + str(descriptor))
 		else:
 			quantity = float(healthyRecipe[ingredient]['quantity'])
-			print(str(quantity).strip() + " " + str(measurement).strip() + " " + ingredient + " " + str(descriptor).strip())
+			print(str(quantity).strip() + " " + str(measurement).strip() + " " + healthyRecipe[ingredient]['parens']+ " " +ingredient + " " + str(descriptor).strip())
 	print('\n')
 	tagdata.print_methods(recipeList)
 	print('\n' + "Tools: " + '\n')
@@ -379,10 +379,10 @@ def fromHealthy():
 			measurement = convertMeasurement(measurement)
 			descriptor = healthyRecipe[ingredient]['descriptor']
 			if quantity == "":
-				print(str(measurement) + " " + ingredient + " " + str(descriptor))
+				print(str(measurement) + " " + healthyRecipe[ingredient]['parens']+ " " + ingredient + " " + str(descriptor))
 			else:
 				quantity = float(healthyRecipe[ingredient]['quantity'])
-				print(str(quantity).strip() + " " + str(measurement).strip() + " " + ingredient + " " + str(descriptor).strip())
+				print(str(quantity).strip() + " " + str(measurement).strip() + " " + healthyRecipe[ingredient]['parens']+ " " +ingredient + " " + str(descriptor).strip())
 		print('\n')
 		print("Methods: " + '\n' + "Fried")
 		print('\n' + "Tools: " + '\n')
