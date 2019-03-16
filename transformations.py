@@ -233,7 +233,7 @@ def toHealthy():
 	global originalSteps
 	healthyRecipe = copy.deepcopy(originalIngredients)
 
-	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'beef': 'turkey burger', 'fries': 'sweet potato fries', 'milk': 'skim milk', 'chocolate' : 'dark chocolate', 'yogurt': 'greek yogurt', 'ranch': 'olive oil', 'caesar': 'olive oil'}
+	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'fries': 'sweet potato fries', 'milk': 'skim milk', 'chocolate' : 'dark chocolate', 'yogurt': 'greek yogurt', 'ranch': 'olive oil', 'caesar': 'olive oil'}
 	# replace cheeses with feta cheese (not all of them... doesn't make sense to replace parmesan in a pasta w/ feta cheese for instance)
 	cheeseTypes = ['mozzarella', 'parmigiano-reggiano', 'parmigiano', 'parmigiano reggiano', 'goat', 'cheddar', 'american', 'monterey', 'jack', 'monterey jack', 'provolone', 'cheddar', 'brie', 'swiss', 'manchego', 'parmesan']
 	# replace all breads with Whole wheat Bread
