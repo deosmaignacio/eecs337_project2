@@ -43,12 +43,20 @@ def dressing():
     words = ["mayonnaise", "ketchup", "mustard", "dressing", "ranch", "cajun"]
     return words
 
+def cheese():
+    words = ["parmesan", "ricotta", "swiss", "mozzarella", "cheddar", "feta", "provolone", "brie", "monterey jack", "camembert", "gouda", "blue", "goat", "muenster", "pecorino romano"]
+    return words
+
+def spices():
+    words = ["thyme", "oregano", "basil", "parsley", "dill", "mint", "rosemary", "cumin", "paprika", "nutmeg", "saffron", "coriander", "tumeric"]
+    return words
+
 # Vegetarian Options
 def vegetarian():
     words = ["tofu", "tempeh", "seitan", "mushrooms","lentils"]
     return words
 
-# Asian Foods
+# Chinese Foods
 def asian_noodles():
     words = ["rice noodles", "udon", "soba", "ramen", "lo mein", "wonton noodles", "somen"]
     return words
@@ -73,6 +81,13 @@ def asian_sugar():
     words = ["wasanbon sugar", "okinawa black sugar", "china rock honey sugar", "kurosato sugar"]
     return words
 
+def asian_spices():
+    words = ["star anise", "peppercorn", "white pepper", "ginger", "sichuan pepper", "five-spice", "chili powder"]
+    return words
+
 def asian_cheese():
     words = ["paneer", "sakura cheese", "bandel cheese", "ragya yak cheese"]
     return words
+
+# Mexican Foods
+# def

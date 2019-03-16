@@ -28,17 +28,19 @@ def tag_ingredients(recipe_list):
 		weight = ""
 		ingredient = ""
 		descriptor = ""
+		paren_option = ""
 		for k in i.split():
-			if "/" in k:
+			if "/" in k and "(" not in k and ")" not in k:
 				quantity += float(sum(Fraction(s) for s in k.split()))
 			if k.isdigit():
 				quantity += float(k)
 			if k in measure_key_list or k+"s" in measure_key_list:
 				measurement = k
-				# measurement.append(k)
 			# if "(" in k:
-			# 	index = i.split().index(k)
-			# 	measurement.append((k+" "+i.split()[index+1]).strip("()"))
+			# 	print(i.split())
+				# index = i.split().index(k)
+				#
+				# measurement.append((k+" "+i.split()[index+1]).strip("()"))
 			if k != quantity and k!= measurement and not(k.isdigit()) and not("/" in k) and "(" not in k and ")" not in k and k not in measure_key_list and k+"s" not in measure_key_list:
 				token_k= k.split()
 				tagged_k = nltk.pos_tag(token_k)

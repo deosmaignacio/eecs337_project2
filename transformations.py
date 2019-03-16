@@ -123,8 +123,12 @@ def toVegetarian():
 
 	# If we find a meat, we change the key to a veggie and append new key to new dict
 	for key in originalIngredients.keys():
-		temp_str = ""
+		main_temp_str = ""
+		veg_temp_str = ""
 		for i in key.split():
+
+			main_temp_str += i + " "
+
 			if i in meat_list:
 				index = random.randint(0,len(veg_list)-1)
 				while index in veg_random_list:
@@ -133,9 +137,12 @@ def toVegetarian():
 				meat = i
 				i = veg_list[index]
 				relationship_dict.update({meat:i})
-			temp_str += i + " "
+				veg_temp_str += i
 
-		veg_dict.update({temp_str:originalIngredients[key]})
+		if veg_temp_str != "":
+			veg_dict.update({veg_temp_str:originalIngredients[key]})
+		else:
+			veg_dict.update({main_temp_str:originalIngredients[key]})
 
 
 	# Print ingredient dict
@@ -227,7 +234,7 @@ def fromHealthy():
 	tagdata.print_directions(recipeList)
 	return
 
-def toMexicanCuisine(): # or other style
+def toIndianCuisine(): # or other style
 	return
 
 def toAsianCuisine():
@@ -237,18 +244,19 @@ def toAsianCuisine():
 	asian_dict = {}
 
 	# List of known food types
-	meat_list = keywords.meat()
 	veg_list = keywords.veggies()
 	sandwich_list = keywords.sandwich()
 	pasta_list = keywords.pasta()
+	cheese_list = keywords.cheese()
+	spices_list = keywords.spices()
 
 	# List of asian food types
-	asian_meat_list = keywords.asian_meat()
 	asian_veggies_list = keywords.asian_veggies()
 	asian_sandwich_list = keywords.asian_sandwich()
 	asian_noodle_list = keywords.asian_noodles()
 	asian_sugar_list = keywords.asian_sugar()
 	asian_cheese_list = keywords.asian_cheese()
+	asian_spices_list = keywords.asian_spices()
 
 	# List of storing random integers
 	random_list = []
@@ -269,6 +277,8 @@ def toAsianCuisine():
 		pasta_temp_str = ""
 		sugar_temp_str = ""
 		cheese_temp_str = ""
+		rem_cheese_temp_str = ""
+		spices_temp_str = ""
 
 		for i in key.split():
 			i = i.strip(".,()")
@@ -279,24 +289,7 @@ def toAsianCuisine():
 			# unchanged key to check
 			main_temp_str += i + " "
 
-
-			# if word is in meat list
-			if i in meat_list or i+"s" in meat_list:
-
-				# find a random asian meat that is not used before
-				index = random.randint(0,len(asian_meat_list)-1)
-				while index in random_list:
-					index = random.randint(0,len(asian_meat_list)-1)
-				random_list.append(index)
-
-				# assign new asian meat to be put in temp_str
-				meat = i
-				i = asian_meat_list[index]
-				relationship_dict.update({meat:i})
-			meat_temp_str += i + " "
-
-			# reset variables and same as meat checking
-			i = reset
+			# # if word is in veggie list
 			random_list = []
 			if i in veg_list or i+"s" in veg_list:
 				index = random.randint(0,len(asian_veggies_list)-1)
@@ -347,6 +340,11 @@ def toAsianCuisine():
 			i = reset
 			random_list = []
 			if i == "cheese":
+				str_list = cheese_temp_str.split()
+				for check_cheese in str_list:
+					if check_cheese in cheese_list:
+						str_list.remove(check_cheese)
+						cheese_temp_str = ' '.join(str(m) for m in str_list)
 				index = random.randint(0,len(asian_cheese_list)-1)
 				while index in random_list:
 					index = random.randint(0,len(asian_cheese_list)-1)
@@ -356,11 +354,21 @@ def toAsianCuisine():
 				relationship_dict.update({meat:i})
 			cheese_temp_str += i + " "
 
+			i = reset
+			random_list = []
+			if i in spices_list:
+				index = random.randint(0,len(asian_spices_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(asian_spices_list)-1)
+				random_list.append(index)
+				meat = i
+				i = asian_spices_list[index]
+				relationship_dict.update({meat:i})
+			spices_temp_str += i + " "
+
 
 		# only update dict with changed str if something changed
-		if main_temp_str != meat_temp_str:
-			asian_dict.update({meat_temp_str:originalIngredients[key]})
-		elif main_temp_str != veg_temp_str:
+		if main_temp_str != veg_temp_str:
 			asian_dict.update({veg_temp_str:originalIngredients[key]})
 		elif main_temp_str != sand_temp_str:
 			asian_dict.update({sand_temp_str:originalIngredients[key]})
@@ -370,6 +378,8 @@ def toAsianCuisine():
 			asian_dict.update({sugar_temp_str:originalIngredients[key]})
 		elif main_temp_str != cheese_temp_str:
 			asian_dict.update({cheese_temp_str:originalIngredients[key]})
+		elif main_temp_str != spices_temp_str:
+			asian_dict.update({spices_temp_str:originalIngredients[key]})
 		else:
 			asian_dict.update({main_temp_str:originalIngredients[key]})
 
@@ -398,6 +408,7 @@ def toAsianCuisine():
 	meat_key = relationship_dict.keys()
 	for word_index in range(len(dir)):
 		word = dir[word_index]
+		word = word.lower()
 		if word in pan_list or word+"s" in pan_list:
 			meat = word
 			dir[word_index] = "wok"
@@ -409,6 +420,9 @@ def toAsianCuisine():
 		if word in oven_list or word+"s" in oven_list:
 			meat = word
 			dir[word_index] = "furnace"
+
+		if word in cheese_list:
+			dir[word_index] = ""
 
 		if word.strip(".,()") in meat_key:
 			dir[word_index] = relationship_dict[word.strip(".,()")]
