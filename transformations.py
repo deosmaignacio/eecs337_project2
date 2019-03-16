@@ -1,4 +1,4 @@
-import tagdata, sys, parseurl, difflib, keywords, random
+import tagdata, sys, parseurl, difflib, keywords, random, copy
 
 originalDish = ""
 originalIngredients = {}
@@ -176,44 +176,70 @@ def fromVegetarian():
 
 def toHealthy():
 	global originalIngredients
-	healthyRecipe = originalIngredients
+	global originalTools
+	global originalSteps
+	healthyRecipe = copy.deepcopy(originalIngredients)
 
-	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'salt': 'iodized salt', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'beef': 'turkey burger', 'fries': 'sweet potato fries'}
+	unhealthyReplacements = {'burger': 'turkey burger', 'rice': 'brown rice', 'noodles': 'zoocchini noodles', 'pancetta': 'turkey ham', 'french fries': 'zucchini fries', 'fries': 'zucchini fries', 'pancake': 'banana pancakes', 'beef': 'turkey burger', 'fries': 'sweet potato fries', 'milk': 'skim milk', 'chocolate' : 'dark chocolate', 'yogurt': 'greek yogurt', 'ranch': 'olive oil', 'caesar': 'olive oil'}
 	# replace cheeses with feta cheese (not all of them... doesn't make sense to replace parmesan in a pasta w/ feta cheese for instance)
-	cheeseTypes = ['mozzarella', 'parmigiano-reggiano', 'parmigiano', 'parmigiano reggiano', 'goat', 'cheddar', 'american', 'monterey', 'jack', 'monterey jack', 'provolone', 'cheddar', 'brie', 'swiss', 'manchego']
+	cheeseTypes = ['mozzarella', 'parmigiano-reggiano', 'parmigiano', 'parmigiano reggiano', 'goat', 'cheddar', 'american', 'monterey', 'jack', 'monterey jack', 'provolone', 'cheddar', 'brie', 'swiss', 'manchego', 'parmesan']
 	# replace all breads with Whole wheat Bread
-	breadTypes = ['bread', 'white', 'multigrain', 'cornbread', 'ciabatta', 'naan', 'brioche', 'brown', 'focaccia', 'bagel', 'pita', 'flatbread', 'breadsticks']
-	# print("original Ingredients: ")
-	# tagdata.print_ingredients(recipeList)
+	breadTypes = ['bread', 'white', 'multigrain', 'cornbread', 'ciabatta', 'naan', 'brioche', 'brown', 'focaccia', 'bagel', 'pita', 'flatbread', 'breadsticks', 'roll']
 	for originalIngredient in originalIngredients:
 		ingredient = originalIngredient.replace(',', '')
 		ingredientWords = ingredient.split()
+		replacement = False
 		for unhealthyFood in unhealthyReplacements.keys():
-			replacement = False
 			if replacement:
 				break
 			for ingredientWord in ingredientWords:
 				if replacement:
 					break
-				if ingredientWord in unhealthyFood:
-					ingredientInfo = originalIngredients[originalIngredient]
-					del healthyRecipe[ingredient]
-					healthyRecipe[unhealthyReplacements[unhealthyFood]] = ingredientInfo
-					replacement = True
-					break
-				elif ingredient in cheeseTypes:
-					del healthyRecipe[ingredient]
-					healthyRecipe[unhealthyReplacements[ingredient]] = 'goat cheese'
-					replacement = True
-					break
-				elif ingredient in breadTypes:
-					del healthyRecipe[ingredient]
-					healthyRecipe[unhealthyReplacements[ingredient]] = 'whole wheat bread'
-					replacement = True
-					break
+				if len(ingredientWord) > 3:
+					if ingredientWord in unhealthyFood:
+						ingredientInfo = originalIngredients[originalIngredient]
+						if ingredientInfo['descriptor'].strip() in "white": # this just handles white rice. only case where descriptor was problematic
+							ingredientInfo['descriptor'] = ''
+						del healthyRecipe[originalIngredient]
+						healthyRecipe[unhealthyReplacements[unhealthyFood]] = ingredientInfo
+						replacement = True
+						break
+					elif ingredientWord in cheeseTypes:
+						ingredientInfo = originalIngredients[originalIngredient]
+						del healthyRecipe[originalIngredient]
+						healthyRecipe["feta cheese"] = ingredientInfo
+						replacement = True
+						break
+					elif ingredientWord in breadTypes:
+						ingredientInfo = originalIngredients[originalIngredient]
+						del healthyRecipe[originalIngredient]
+						healthyRecipe["wheat bread"] = ingredientInfo
+						replacement = True
+						break
+					elif "sugar" in ingredientWord:
+						ingredientInfo = originalIngredients[originalIngredient]
+						currMeasurement = ingredientInfo['quantity']
+						if currMeasurement:
+							try:
+								float(currMeasurement)
+								ingredientInfo['quantity'] = str(float(currMeasurement)/2)
+							except:
+								pass
+						healthyRecipe[ingredient] = ingredientInfo
+						replacement = True
+						break
+
+	dir = tagdata.get_directions(recipeList)
+	dir = dir.split()
+	for word_index in range(len(dir)):
+		word = dir[word_index]
+		for unhealthyFood in unhealthyReplacements.keys():
+			if word in unhealthyFood and len(word) > 3:
+				dir[word_index] = unhealthyReplacements[unhealthyFood]
 
 	print("--------------------------------")
-	print("Healthy " + originalDish)
+	print("Healthy " + originalDish + '\n')
+	print("Ingredients: " + '\n')
 	for ingredient in healthyRecipe:
 		quantity = healthyRecipe[ingredient]['quantity']
 		measurement = healthyRecipe[ingredient]['measurement']
@@ -222,8 +248,25 @@ def toHealthy():
 		if quantity == "":
 			print(str(measurement) + " " + ingredient + " " + str(descriptor))
 		else:
-			quantity = int(healthyRecipe[ingredient]['quantity'])
+			quantity = float(healthyRecipe[ingredient]['quantity'])
 			print(str(quantity).strip() + " " + str(measurement).strip() + " " + ingredient + " " + str(descriptor).strip())
+	print('\n')
+	tagdata.print_methods(recipeList)
+	print('\n' + "Tools: " + '\n')
+	for tool in originalTools:
+		print(tool)
+	print('\n')
+	direction = ""
+	for wordIndex in range(len(dir)):
+		word = dir[wordIndex]
+		if wordIndex < len(dir) - 1 and len(word) > 0 and word[0].isupper() and dir[wordIndex + 1][0].islower() and (dir[wordIndex -1][0].islower() or len(dir[wordIndex -1 ]) < 4):
+			print(direction)
+			direction = dir[wordIndex] + " "
+		else:
+			direction += dir[wordIndex] + " "
+	if len(direction.strip()) > 0:
+		print(direction)
+
 	print("--------------------------------")
 	return
 
