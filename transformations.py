@@ -3,6 +3,7 @@ import tagdata, sys, parseurl, difflib, keywords, random, copy
 originalDish = ""
 originalIngredients = {}
 originalSteps = {}
+originalTools = []
 
 
 def convertMeasurement(measurement):
@@ -56,6 +57,7 @@ def originalRecipe(url):
 	global originalIngredients
 	global originalSteps
 	global recipeList
+	global originalTools
 
 	recipeList = parseurl.processhtml(url)
 	originalDish = extractDishName(url)
@@ -66,6 +68,7 @@ def originalRecipe(url):
 	print("Ingredients: ")
 	tagdata.print_ingredients(recipeList)
 	tools = tagdata.find_tools(recipeList)
+	originalTools = tools
 	methods = tagdata.get_cooking_methods(recipeList)
 	print('\n')
 	steps = tagdata.parse_steps(ingredients, tools, methods, recipeList)
@@ -271,11 +274,84 @@ def toHealthy():
 	return
 
 def fromHealthy():
-	tagdata.print_ingredients(recipeList)
-	tagdata.print_methods(recipeList)
-	tagdata.print_tools(recipeList)
-	tagdata.print_directions(recipeList)
-	return
+		global originalIngredients
+		global originalTools
+		global originalSteps
+		healthyRecipe = copy.deepcopy(originalIngredients)
+
+		unhealthyReplacements = {'turkey burger': 'beef burger', 'brow rice': 'white rice', 'zoocchini noodles': 'noodles', 'turkey ham': 'pancetta', 'fries': 'french fries', 'pancake': 'pancakes', 'sweet potato': 'french fries', 'skim milk': 'milk', 'dark chocolate' : 'milk chocolate', 'greek yogurt': 'yogurt', 'whole wheat': 'ciabatta', 'feta': 'cheddar'}
+		for originalIngredient in originalIngredients:
+			ingredient = originalIngredient.replace(',', '')
+			ingredientWords = ingredient.split()
+			replacement = False
+			for unhealthyFood in unhealthyReplacements.keys():
+				if replacement:
+					break
+				for ingredientWord in ingredientWords:
+					if replacement:
+						break
+					if len(ingredientWord) > 3:
+						if ingredientWord in unhealthyFood:
+							ingredientInfo = originalIngredients[originalIngredient]
+							if ingredientInfo['descriptor'].strip() in "brown": # this just handles brown rice. only case where descriptor was problematic
+								ingredientInfo['descriptor'] = ''
+							del healthyRecipe[originalIngredient]
+							healthyRecipe[unhealthyReplacements[unhealthyFood]] = ingredientInfo
+							replacement = True
+							break
+						elif "sugar" in ingredientWord:
+							ingredientInfo = originalIngredients[originalIngredient]
+							currMeasurement = ingredientInfo['quantity']
+							if currMeasurement:
+								try:
+									float(currMeasurement)
+									ingredientInfo['quantity'] = str(float(currMeasurement)*2)
+								except:
+									pass
+							healthyRecipe[ingredient] = ingredientInfo
+							replacement = True
+							break
+
+		dir = tagdata.get_directions(recipeList)
+		dir = dir.split()
+		for word_index in range(len(dir)):
+			word = dir[word_index]
+			for unhealthyFood in unhealthyReplacements.keys():
+				if word in unhealthyFood and len(word) > 3 and word not in "heat":
+					dir[word_index] = unhealthyReplacements[unhealthyFood]
+
+		print("--------------------------------")
+		print("Less Healthy " + originalDish + '\n')
+		print("Ingredients: " + '\n')
+		for ingredient in healthyRecipe:
+			quantity = healthyRecipe[ingredient]['quantity']
+			measurement = healthyRecipe[ingredient]['measurement']
+			measurement = convertMeasurement(measurement)
+			descriptor = healthyRecipe[ingredient]['descriptor']
+			if quantity == "":
+				print(str(measurement) + " " + ingredient + " " + str(descriptor))
+			else:
+				quantity = float(healthyRecipe[ingredient]['quantity'])
+				print(str(quantity).strip() + " " + str(measurement).strip() + " " + ingredient + " " + str(descriptor).strip())
+		print('\n')
+		print("Methods: " + '\n' + "Fried")
+		print('\n' + "Tools: " + '\n')
+		for tool in originalTools:
+			print(tool)
+		print('\n')
+		direction = ""
+		for wordIndex in range(len(dir)):
+			word = dir[wordIndex]
+			if wordIndex < len(dir) - 1 and len(word) > 0 and word[0].isupper() and dir[wordIndex + 1][0].islower() and (dir[wordIndex -1][0].islower() or len(dir[wordIndex -1 ]) < 4):
+				print(direction)
+				direction = dir[wordIndex] + " "
+			else:
+				direction += dir[wordIndex] + " "
+		if len(direction.strip()) > 0:
+			print(direction)
+
+		print("--------------------------------")
+		return
 
 def toIndianCuisine(): # or other style
 	return
