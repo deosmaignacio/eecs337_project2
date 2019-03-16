@@ -26,7 +26,7 @@ def time():
 def not_vegan():
     words = ["sausage", "chorizo sausage", "chuck roast", "roast", "chicken", "beef", "turkey", "ham", "steak", "fish", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clam", "clams", "mussel", "mussels", "scallop", "scallops", "lobster", "shrimp", "tuna", "abalone"]
     words.append("mayonnaise")
-    words.extend(["cheese", "milk", "yogurt", "butter"])
+    words.extend(["cheese", "milk", "yogurt","egg","buttermilk"])
     return words
 
 def meat():

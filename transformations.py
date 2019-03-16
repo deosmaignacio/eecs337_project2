@@ -5,7 +5,6 @@ originalIngredients = {}
 originalSteps = {}
 originalTools = []
 
-
 def convertMeasurement(measurement):
 	measurement = measurement.lower()
 	if measurement == "pound":
@@ -50,8 +49,6 @@ def extractDishName(url):
 		dishName += dishWord.lower().capitalize() + " "
 	return dishName
 
-
-
 def originalRecipe(url):
 	global originalDish
 	global originalIngredients
@@ -73,20 +70,6 @@ def originalRecipe(url):
 	print('\n')
 	steps = tagdata.parse_steps(ingredients, tools, methods, recipeList)
 	originalSteps = steps
-
-	# print('\n')
-	# print("Ingredients: ")
-	# for ingredient in ingredients:
-	# 	quantity = ingredients[ingredient]['quantity']
-	# 	measurement = ingredients[ingredient]['measurement']
-	# 	measurement = convertMeasurement(measurement)
-	# 	descriptor = ingredients[ingredient]['descriptor']
-	# 	if quantity == "":
-	# 		print(str(measurement) + " " + ingredient + " " + str(descriptor))
-	# 	else:
-	# 		quantity = int(ingredients[ingredient]['quantity'])
-	# 		print(str(quantity).strip() + " " + str(measurement).strip() + " " + ingredient + " " + str(descriptor).strip())
-
 	print('\n')
 	tagdata.print_tools(recipeList)
 	print('\n')
@@ -101,7 +84,7 @@ def main():
 	originalRecipe(url)
 	print("--------------------------------")
 	while True:
-		transformation = int(input("Select one: " + '\n' + "1: To Vegetarian" + '\n' + "2: From Vegetarian" + '\n' + "3: To Healthy" + '\n' + "4: From Healthy" + '\n'+ "5: To Chinese Cuisine" + '\n' + "6: To Japanese Cuisine" + '\n'))
+		transformation = int(input("Select one: " + '\n' + "1: To Vegetarian" + '\n' + "2: From Vegetarian" + '\n' + "3: To Healthy" + '\n' + "4: From Healthy" + '\n'+ "5: To Chinese Cuisine" + '\n' + "6: To Japanese Cuisine" + '\n' + "7: To Vegan" + '\n'))
 		if transformation == 1:
 			toVegetarian()
 		elif transformation == 2:
@@ -114,6 +97,8 @@ def main():
 			toAsianCuisine()
 		elif transformation == 6:
 			toJapaneseCuisine()
+		elif transformation == 7:
+			toVegan()
 		else:
 			print ("You must choose a number from above")
 	return
@@ -148,6 +133,56 @@ def toVegetarian():
 		else:
 			veg_dict.update({main_temp_str:originalIngredients[key]})
 
+	# Print ingredient dict
+	for key, value in veg_dict.items():
+		print("\t",value["quantity"],value["measurement"], value["parens"], value["descriptor"],key)
+
+	# Change meats in the directions to correlate to veggies above
+	dir = tagdata.get_directions(recipeList)
+	dir = dir.split()
+	meat_key = relationship_dict.keys()
+	for word_index in range(len(dir)):
+		word = dir[word_index]
+		if word.strip(".,()") in meat_key:
+			dir[word_index] = relationship_dict[word.strip(".,()")]
+
+	# Print methods and tools
+	tagdata.print_methods(recipeList)
+	tagdata.print_tools(recipeList)
+
+	# Print directions
+	print("\n",' '.join(str(m) for m in dir),"\n")
+	return
+
+def toVegan():
+	veg_dict = {}
+	meat_list = keywords.not_vegan()
+	veg_list = keywords.veggies()
+	relationship_dict = {}
+	veg_random_list = []
+
+	# If we find a meat, we change the key to a veggie and append new key to new dict
+	for key in originalIngredients.keys():
+		main_temp_str = ""
+		veg_temp_str = ""
+		for i in key.split():
+
+			main_temp_str += i + " "
+
+			if i in meat_list:
+				index = random.randint(0,len(veg_list)-1)
+				while index in veg_random_list:
+					index = random.randint(0,len(veg_list)-1)
+				veg_random_list.append(index)
+				meat = i
+				i = veg_list[index]
+				relationship_dict.update({meat:i})
+				veg_temp_str += i
+
+		if veg_temp_str != "":
+			veg_dict.update({veg_temp_str:originalIngredients[key]})
+		else:
+			veg_dict.update({main_temp_str:originalIngredients[key]})
 
 	# Print ingredient dict
 	for key, value in veg_dict.items():
@@ -201,7 +236,6 @@ def fromVegetarian():
 			veg_dict.update({meat_temp_str:originalIngredients[key]})
 		else:
 			veg_dict.update({main_temp_str:originalIngredients[key]})
-
 
 	# Print ingredient dict
 	for key, value in veg_dict.items():
@@ -535,7 +569,6 @@ def toAsianCuisine():
 				relationship_dict.update({meat:i})
 			spices_temp_str += i + " "
 
-
 		# only update dict with changed str if something changed
 		if main_temp_str != veg_temp_str:
 			asian_dict.update({veg_temp_str:originalIngredients[key]})
@@ -565,7 +598,6 @@ def toAsianCuisine():
 		if tools[index] in oven_list or tools[index]+"s" in oven_list:
 			meat = tools[index]
 			tools[index] = "furnace"
-
 
 	# print ingredients
 	for key, value in asian_dict.items():
@@ -734,7 +766,6 @@ def toJapaneseCuisine():
 				relationship_dict.update({meat:i})
 			spices_temp_str += i + " "
 
-
 		# only update dict with changed str if something changed
 		if main_temp_str != veg_temp_str:
 			japanese_dict.update({veg_temp_str:originalIngredients[key]})
@@ -764,7 +795,6 @@ def toJapaneseCuisine():
 		if tools[index] in oven_list or tools[index]+"s" in oven_list:
 			meat = tools[index]
 			tools[index] = "furnace"
-
 
 	# print ingredients
 	for key, value in japanese_dict.items():
@@ -802,12 +832,6 @@ def toJapaneseCuisine():
 
 	print("Directions:"+"\n")
 	print(' '.join(str(m) for m in dir),"\n")
-	return
-
-def DIY():
-	return
-
-def cookingMethod(): # i.e. from bake to stir fry
 	return
 
 if __name__ == '__main__':
