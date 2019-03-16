@@ -151,7 +151,7 @@ def toVegetarian():
 
 	# Print ingredient dict
 	for key, value in veg_dict.items():
-		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+		print("\t",value["quantity"],value["measurement"], value["parens"], value["descriptor"],key)
 
 	# Change meats in the directions to correlate to veggies above
 	dir = tagdata.get_directions(recipeList)
@@ -167,8 +167,7 @@ def toVegetarian():
 	tagdata.print_tools(recipeList)
 
 	# Print directions
-	print("Directions:"+"\n")
-	print(' '.join(str(m) for m in dir),"\n")
+	print("\n",' '.join(str(m) for m in dir),"\n")
 	return
 
 def fromVegetarian():
@@ -208,7 +207,7 @@ def fromVegetarian():
 	for key, value in veg_dict.items():
 		if value["measurement"] == "":
 			value["measurement"] = "lb"
-		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+		print("\t",value["quantity"],value["measurement"],value["parens"],value["descriptor"],key)
 
 	# Change meats in the directions to correlate to veggies above
 	dir = tagdata.get_directions(recipeList)
@@ -570,7 +569,7 @@ def toAsianCuisine():
 
 	# print ingredients
 	for key, value in asian_dict.items():
-		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+		print("\t",value["quantity"],value["measurement"],value["parens"],value["descriptor"],key)
 
 	# change words in directions
 	dir = tagdata.get_directions(recipeList)
@@ -769,7 +768,7 @@ def toJapaneseCuisine():
 
 	# print ingredients
 	for key, value in japanese_dict.items():
-		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+		print("\t",value["quantity"],value["measurement"],value["parens"],value["descriptor"],key)
 
 	# change words in directions
 	dir = tagdata.get_directions(recipeList)

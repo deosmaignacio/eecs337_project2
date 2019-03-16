@@ -36,9 +36,15 @@ def tag_ingredients(recipe_list):
 				quantity += float(k)
 			if k in measure_key_list or k+"s" in measure_key_list:
 				measurement = k
-			# if "(" in k:
-			# 	print(i.split())
-				# index = i.split().index(k)
+			if "(" in k:
+				splitter = i.split()
+				index1 = splitter.index(k)
+				index2 = ""
+				if ")" in splitter[index1 + 1]:
+					index2 = index1 + 1
+				if index2 == index1+1:
+					ss = ' '.join(str(m) for m in splitter[index1:index2+1])
+					paren_option = ss
 				#
 				# measurement.append((k+" "+i.split()[index+1]).strip("()"))
 			if k != quantity and k!= measurement and not(k.isdigit()) and not("/" in k) and "(" not in k and ")" not in k and k not in measure_key_list and k+"s" not in measure_key_list:
@@ -52,7 +58,7 @@ def tag_ingredients(recipe_list):
 
 		if quantity == 0:
 			quantity = ""
-		ingredients_dict.update({ingredient:{"quantity":quantity, "measurement":measurement,"descriptor":descriptor}})
+		ingredients_dict.update({ingredient:{"quantity":quantity, "measurement":measurement,"descriptor":descriptor, "parens":paren_option}})
 
 	return ingredients_dict
 
@@ -163,7 +169,7 @@ def print_ingredients(recipe_list):
 	ingredients = tag_ingredients(recipe_list)
 	for key, value in ingredients.items():
 		# print("\t",value["quantity"],' '.join(str(m) for m in value["measurement"]),value["descriptor"],key)
-		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+		print("\t",value["quantity"],value["measurement"],value["parens"],value["descriptor"],key)
 
 def print_methods(recipe_list):
 

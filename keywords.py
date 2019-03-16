@@ -22,6 +22,11 @@ def cooking_methods():
 def time():
     words = ["minutes","seconds","hours","days"]
     return words
+# 
+# def not_vegan():
+#     words = ["sausage", "chorizo sausage", "chuck roast", "roast", "chicken", "beef", "turkey", "ham", "steak", "fish", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clam", "clams", "mussel", "mussels", "scallop", "scallops", "lobster", "shrimp", "tuna", "abalone"]
+#     words.append("mayonnaise")
+#     words.extend(["cheese", "milk", "yogurt", "butter", ])
 
 def meat():
     words = ["sausage", "chorizo sausage", "chuck roast", "roast", "chicken", "beef", "turkey", "ham", "steak", "fish", "pork", "bacon", "duck", "cod", "salmon", "sea bass", "tilapia", "clam", "clams", "mussel", "mussels", "scallop", "scallops", "lobster", "shrimp", "tuna", "abalone"]
