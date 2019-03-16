@@ -98,7 +98,7 @@ def main():
 	originalRecipe(url)
 	print("--------------------------------")
 	while True:
-		transformation = int(input("Select one: " + '\n' + "1: To Vegetarian" + '\n' + "2: From Vegetarian" + '\n' + "3: To Healthy" + '\n' + "4: From Healthy" + '\n'+ "5: To Asian" + '\n'))
+		transformation = int(input("Select one: " + '\n' + "1: To Vegetarian" + '\n' + "2: From Vegetarian" + '\n' + "3: To Healthy" + '\n' + "4: From Healthy" + '\n'+ "5: To Chinese Cuisine" + '\n' + "6: To Japanese Cuisine" + '\n'))
 		if transformation == 1:
 			toVegetarian()
 		elif transformation == 2:
@@ -109,9 +109,10 @@ def main():
 			fromHealthy()
 		elif transformation == 5:
 			toAsianCuisine()
-
-
-
+		elif transformation == 6:
+			toJapaneseCuisine()
+		else:
+			print ("You must choose a number from above")
 	return
 
 def toVegetarian():
@@ -168,10 +169,60 @@ def toVegetarian():
 	return
 
 def fromVegetarian():
-	tagdata.print_ingredients(recipeList)
+	veg_dict = {}
+	meat_list = keywords.meat()
+	vegt_list = keywords.vegetarian()
+	veg_list = keywords.veggies()
+	relationship_dict = {}
+	random_list = []
+	count = 0
+
+	# If we find a veggie, we change the key to a meat and append new key to new dict
+	for key in originalIngredients.keys():
+		main_temp_str = ""
+		meat_temp_str = ""
+		for i in key.split():
+			i = i.strip(".,()")
+
+			main_temp_str += i + " "
+
+			if (i in veg_list or i+"s" in veg_list or i in vegt_list or i+"s" in vegt_list) and count == 0:
+				index = random.randint(0,len(meat_list)-1)
+
+				meat = i
+				i = meat_list[index]
+				relationship_dict.update({meat:i})
+				meat_temp_str += i
+				count += 1
+
+		if meat_temp_str != "":
+			veg_dict.update({meat_temp_str:originalIngredients[key]})
+		else:
+			veg_dict.update({main_temp_str:originalIngredients[key]})
+
+
+	# Print ingredient dict
+	for key, value in veg_dict.items():
+		if value["measurement"] == "":
+			value["measurement"] = "lb"
+		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+
+	# Change meats in the directions to correlate to veggies above
+	dir = tagdata.get_directions(recipeList)
+	dir = dir.split()
+	meat_key = relationship_dict.keys()
+	for word_index in range(len(dir)):
+		word = dir[word_index]
+		if word.strip(".,()") in meat_key:
+			dir[word_index] = relationship_dict[word.strip(".,()")]
+
+	# Print methods and tools
 	tagdata.print_methods(recipeList)
 	tagdata.print_tools(recipeList)
-	tagdata.print_directions(recipeList)
+
+	# Print directions
+	print("Directions:"+"\n")
+	print(' '.join(str(m) for m in dir),"\n")
 	return
 
 def toHealthy():
@@ -400,6 +451,205 @@ def toAsianCuisine():
 
 	# print ingredients
 	for key, value in asian_dict.items():
+		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
+
+	# change words in directions
+	dir = tagdata.get_directions(recipeList)
+	dir = dir.split()
+	meat_key = relationship_dict.keys()
+	for word_index in range(len(dir)):
+		word = dir[word_index]
+		word = word.lower()
+		if word in pan_list or word+"s" in pan_list:
+			meat = word
+			dir[word_index] = "wok"
+
+		if word in pot_list or word+"s" in pot_list:
+			meat = word
+			dir[word_index] = "clay pot"
+
+		if word in oven_list or word+"s" in oven_list:
+			meat = word
+			dir[word_index] = "furnace"
+
+		if word in cheese_list:
+			dir[word_index] = ""
+
+		if word.strip(".,()") in meat_key:
+			dir[word_index] = relationship_dict[word.strip(".,()")]
+
+	tagdata.print_methods(recipeList)
+	print("Tools:"+"\n")
+	for tool in tools:
+		print("\t",tool)
+
+	print("Directions:"+"\n")
+	print(' '.join(str(m) for m in dir),"\n")
+	return
+
+def toJapaneseCuisine():
+	pan_list = ["pans","skillets","saucepans"]
+	pot_list = ["pots"]
+	oven_list = ["ovens"]
+	japanese_dict = {}
+
+	# List of known food types
+	veg_list = keywords.veggies()
+	sandwich_list = keywords.sandwich()
+	pasta_list = keywords.pasta()
+	cheese_list = keywords.cheese()
+	spices_list = keywords.spices()
+
+	# List of japanese food types
+	japanese_veggies_list = keywords.japanese_veggies()
+	japanese_sandwich_list = keywords.japanese_sandwich()
+	japanese_noodle_list = keywords.japanese_noodles()
+	japanese_sugar_list = keywords.japanese_sugar()
+	japanese_cheese_list = keywords.japanese_cheese()
+	japanese_spices_list = keywords.japanese_spices()
+
+	# List of storing random integers
+	random_list = []
+
+	# List to use to change directions
+	relationship_dict = {}
+
+	# Find tools
+	tools = tagdata.find_tools(recipeList)
+
+	for key in originalIngredients.keys():
+
+		# Use to check if we changed a word
+		main_temp_str = ""
+		meat_temp_str = ""
+		veg_temp_str = ""
+		sand_temp_str = ""
+		pasta_temp_str = ""
+		sugar_temp_str = ""
+		cheese_temp_str = ""
+		rem_cheese_temp_str = ""
+		spices_temp_str = ""
+
+		for i in key.split():
+			i = i.strip(".,()")
+
+			# used to reset current word to keep checking
+			reset = i
+
+			# unchanged key to check
+			main_temp_str += i + " "
+
+			# # if word is in veggie list
+			random_list = []
+			if i in veg_list or i+"s" in veg_list:
+				index = random.randint(0,len(japanese_veggies_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(japanese_veggies_list)-1)
+				random_list.append(index)
+				meat = i
+				i = japanese_veggies_list[index]
+				relationship_dict.update({meat:i})
+			veg_temp_str += i + " "
+
+			i = reset
+			random_list = []
+			if i in sandwich_list or i+"s" in sandwich_list:
+				index = random.randint(0,len(japanese_sandwich_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(japanese_sandwich_list)-1)
+				random_list.append(index)
+				meat = i
+				i = japanese_sandwich_list[index]
+				relationship_dict.update({meat:i})
+			sand_temp_str += i + " "
+
+			i = reset
+			random_list = []
+			if i in pasta_list or i+"s" in pasta_list:
+				index = random.randint(0,len(japanese_noodle_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(japanese_noodle_list)-1)
+				random_list.append(index)
+				meat = i
+				i = japanese_noodle_list[index]
+				relationship_dict.update({meat:i})
+			pasta_temp_str += i + " "
+
+			i = reset
+			random_list = []
+			if i == "sugar":
+				index = random.randint(0,len(japanese_sugar_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(japanese_sugar_list)-1)
+				random_list.append(index)
+				meat = i
+				i = japanese_sugar_list[index]
+				relationship_dict.update({meat:i})
+			sugar_temp_str += i + " "
+
+			i = reset
+			random_list = []
+			if i == "cheese":
+				str_list = cheese_temp_str.split()
+				for check_cheese in str_list:
+					if check_cheese in cheese_list:
+						str_list.remove(check_cheese)
+						cheese_temp_str = ' '.join(str(m) for m in str_list)
+				index = random.randint(0,len(japanese_cheese_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(japanese_cheese_list)-1)
+				random_list.append(index)
+				meat = i
+				i = japanese_cheese_list[index]
+				relationship_dict.update({meat:i})
+			cheese_temp_str += i + " "
+
+			i = reset
+			random_list = []
+			if i in spices_list:
+				index = random.randint(0,len(japanese_spices_list)-1)
+				while index in random_list:
+					index = random.randint(0,len(japanese_spices_list)-1)
+				random_list.append(index)
+				meat = i
+				i = japanese_spices_list[index]
+				relationship_dict.update({meat:i})
+			spices_temp_str += i + " "
+
+
+		# only update dict with changed str if something changed
+		if main_temp_str != veg_temp_str:
+			japanese_dict.update({veg_temp_str:originalIngredients[key]})
+		elif main_temp_str != sand_temp_str:
+			japanese_dict.update({sand_temp_str:originalIngredients[key]})
+		elif main_temp_str != pasta_temp_str:
+			japanese_dict.update({pasta_temp_str:originalIngredients[key]})
+		elif main_temp_str != sugar_temp_str:
+			japanese_dict.update({sugar_temp_str:originalIngredients[key]})
+		elif main_temp_str != cheese_temp_str:
+			japanese_dict.update({cheese_temp_str:originalIngredients[key]})
+		elif main_temp_str != spices_temp_str:
+			japanese_dict.update({spices_temp_str:originalIngredients[key]})
+		else:
+			japanese_dict.update({main_temp_str:originalIngredients[key]})
+
+	# change tools to japanese tools
+	for index in range(len(tools)):
+		if tools[index] in pan_list or tools[index]+"s" in pan_list:
+			meat = tools[index]
+			tools[index] = "wok"
+
+		if tools[index] in pot_list or tools[index]+"s" in pot_list:
+			meat = tools[index]
+			tools[index] = "clay pot"
+
+		if tools[index] in oven_list or tools[index]+"s" in oven_list:
+			meat = tools[index]
+			tools[index] = "furnace"
+
+
+	# print ingredients
+	for key, value in japanese_dict.items():
 		print("\t",value["quantity"],value["measurement"],value["descriptor"],key)
 
 	# change words in directions

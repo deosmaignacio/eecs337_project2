@@ -28,7 +28,7 @@ def meat():
     return words
 
 def veggies():
-    words = ["corn", "mushrooms", "squash", "lettuce", "carrots", "cucumbers", "celery", "spinach", "cabbage", "asparagus", "radish", "kale", "zucchini", "peas"]
+    words = ["tomatoes", "onions", "corn", "mushrooms", "squash", "lettuce", "carrots", "cucumbers", "celery", "spinach", "cabbage", "asparagus", "radish", "kale", "zucchini", "peas"]
     return words
 
 def sandwich():
@@ -58,19 +58,15 @@ def vegetarian():
 
 # Chinese Foods
 def asian_noodles():
-    words = ["rice noodles", "udon", "soba", "ramen", "lo mein", "wonton noodles", "somen"]
+    words = ["rice noodles", "lo mein", "wonton noodles", "egg noodles"]
     return words
 
 def asian_sandwich():
-    words = ["naan", "rice bread", "flatbread", "milk bread", "ddongbang"]
-    return words
-
-def asian_meat():
-    words = ["wagyu beef", "bulgogi", "beef satay", "chicken satay", "pepper steak", "mongolian beef", "general tsao's chicken", "pork belly", "sesame chicken", "braised duck", "curry chicken"]
+    words = ["flatbread", "gua bao", "rou bao", "shaobing"]
     return words
 
 def asian_veggies():
-    words = ["napa cabbage", "bok choy", "daikon", "white radish", "chinese eggplant", "choy sum", "mizuna", "lotus root", "taro", "chinese broccoli"]
+    words = ["napa cabbage", "bok choy", "white radish", "chinese eggplant", "choy sum", "lotus root", "chinese broccoli"]
     return words
 
 def asian_dressing():
@@ -78,7 +74,7 @@ def asian_dressing():
     return words
 
 def asian_sugar():
-    words = ["wasanbon sugar", "okinawa black sugar", "china rock honey sugar", "kurosato sugar"]
+    words = ["china rock honey sugar"]
     return words
 
 def asian_spices():
@@ -86,8 +82,35 @@ def asian_spices():
     return words
 
 def asian_cheese():
-    words = ["paneer", "sakura cheese", "bandel cheese", "ragya yak cheese"]
+    words = ["paneer", "bandel cheese", "ragya yak cheese"]
     return words
 
-# Mexican Foods
+# Japanese Foods
+def japanese_noodles():
+    words = ["udon", "soba", "ramen", "somen", "shirataki noodles", "yakisoba", "tsukemen"]
+    return words
+
+def japanese_sandwich():
+    words = ["rice bread", "milk bread", "japanese curry bread", "yakisoba bread", "anpan"]
+    return words
+
+def japanese_veggies():
+    words = ["daikon", "mizuna", "taro", "shishito", "komatsuna", "hakusai"]
+    return words
+
+def japanese_dressing():
+    words = ["wasabi", "yuzu sauce", "tonkatsu sauce", "ponzu", "miso"]
+    return words
+
+def japanese_sugar():
+    words = ["wasanbon sugar", "okinawa black sugar", "kurosato sugar"]
+    return words
+
+def japanese_spices():
+    words = ["wasabi", "shichimi", "rayu", "yuzu kosho", "karashi"]
+    return words
+
+def japanese_cheese():
+    words = ["sakura cheese", "hokkaido cheese", "furano cheese", "so cheese"]
+    return words
 # def
